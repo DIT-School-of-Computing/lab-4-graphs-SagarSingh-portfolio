@@ -101,7 +101,7 @@ public class Arrays extends PApplet {
 		return rainfall[maxIndex];
 	}
 
-	public void drawBarChart() {
+	public void drawChart() {
 		float xAxis = 50;
 		float yAxis = 50;
 		float textSize = 12;
@@ -111,40 +111,111 @@ public class Arrays extends PApplet {
 
 		textSize(textSize);
 		textAlign(CENTER, CENTER);
-		text("Rainfall Bar Chart", width / 2, yAxis / 2);
 
-		// axis lines
-		stroke(0, 0, 255);
-		strokeWeight(2);
-		line(xAxis, yAxis, xAxis, (float) height - yAxis);
-		line(xAxis, height - yAxis, (float) width - xAxis, (float) height - yAxis);
+		switch (mode) {
+			case 0:
+				text("Rainfall Bar Chart", width / 2, yAxis / 2);
 
-		// X-axis ticks and increments
-		for (int i = 0; i < xAxisRange + 1; i++) {
-			float y = map1(i, 0, xAxisRange, height - yAxis, yAxis);
-			text(incrementX * i, xAxis - 20, y);
-			line(xAxis - 10, y, xAxis, y);
+				// axis lines
+				stroke(0, 0, 255);
+				strokeWeight(2);
+				line(xAxis, yAxis, xAxis, (float) height - yAxis);
+				line(xAxis, height - yAxis, (float) width - xAxis, (float) height - yAxis);
+
+				// X-axis ticks and increments
+				for (int i = 0; i < xAxisRange + 1; i++) {
+					float y = map1(i, 0, xAxisRange, height - yAxis, yAxis);
+					text(incrementX * i, xAxis - 20, y);
+					line(xAxis - 10, y, xAxis, y);
+				}
+
+				// Y-axis labels and bars
+				for (int i = 0; i < months.length; i++) {
+					float x = map1(i, 0, months.length, xAxis, (float) width - xAxis);
+					float x2 = map1(i + 1, 0, months.length, xAxis, (float) width - xAxis);
+					float rainfallY = map1(rainfall[i], 0, 500, yAxis, (float) height - yAxis);
+					fill(i * 10, 255, 255);
+					rect(x, (float) height - yAxis, x2 - x, -rainfallY + yAxis);
+					textAlign(CENTER, CENTER);
+					fill(0, 0, 255);
+					text(rainfall[i], (x2 + x) / 2, height - rainfallY - 20);
+					text(months[i], x + 20, (float) height - yAxis + 15);
+				}
+				break;
+			case 1:
+				text("Rainfall Trend Chart", width / 2, yAxis / 2);
+
+				// axis lines
+				stroke(0, 0, 255);
+				strokeWeight(2);
+				line(xAxis, yAxis, xAxis, (float) height - yAxis);
+				line(xAxis, height - yAxis, (float) width - xAxis, (float) height - yAxis);
+
+				// X-axis ticks and increments
+				for (int i = 0; i < xAxisRange + 1; i++) {
+					float y = map1(i, 0, xAxisRange, height - yAxis, yAxis);
+					text(incrementX * i, xAxis - 20, y);
+					line(xAxis - 10, y, xAxis, y);
+				}
+
+				// Y-axis labels
+				for (int i = 0; i < months.length; i++) {
+					float x = map1(i, 0, months.length, xAxis, (float) width - xAxis);
+					float x2 = map1(i + 1, 0, months.length, xAxis, (float) width - xAxis);
+					float rainfallY = map1(rainfall[i], 0, 500, yAxis, (float) height - yAxis);
+
+					fill(i * 10, 255, 255);
+					if (i < months.length - 1) {
+						float rainfallY2 = map1(rainfall[i + 1], 0, 500, yAxis, (float) height - yAxis);
+						line((x + x2) / 2, height - rainfallY, (x2 - x) / 2 + x2, height - rainfallY2);
+					}
+					// rect(x, (float) height - yAxis, x2 - x, -rainfallY + yAxis);
+					textAlign(CENTER, CENTER);
+					fill(0, 0, 255);
+					text(rainfall[i], (x2 + x) / 2, height - rainfallY - 20);
+					text(months[i], x + 20, (float) height - yAxis + 15);
+				}
+
+				break;
+			case 2:
+				text("Rainfall Pie Chart", width / 2, yAxis / 2);
+				float midX = width / 2;
+				float midY = height / 2;
+				float pieSize = height / 2;
+				float total = 0;
+				float start = 0;
+				float end = 0;
+				int i = 0;
+
+				for (float rain : rainfall) {
+					total += rain;
+				}
+
+				for (float rain : rainfall) {
+					fill(i++ * 15, 255, 255);
+					end = map1(rain, 0, total, 0, TWO_PI);
+					arc(midX, midY, pieSize, pieSize, start, end);
+					start = end;
+				}
+
+				break;
+			default:
+				break;
 		}
+	}
 
-		// Y-axis labels and bars
-		for (int i = 0; i < months.length; i++) {
-			float x = map1(i, 0, months.length, xAxis, (float) width - xAxis);
-			float x2 = map1(i + 1, 0, months.length, xAxis, (float) width - xAxis);
-			float rainfallY = map1(rainfall[i], 0, 500, yAxis, (float) height - yAxis);
-			fill(i * 10, 255, 255);
-			rect(x, (float) height - yAxis, x2 - x, -rainfallY + yAxis);
-			textAlign(CENTER, CENTER);
-			fill(0, 0, 255);
-			text(rainfall[i], (x2 + x) / 2, height - rainfallY - 20);
-			text(months[i], x + 20, (float) height - yAxis + 15);
+	int mode = 0;
+
+	public void keyPressed() {
+		if (key >= '0' && key <= '9') {
+			mode = key - '0';
 		}
+		println(mode);
 	}
 
 	public void draw() {
 
 		background(0);
-
-		// noStroke();
-		drawBarChart();
+		drawChart();
 	}
 }
