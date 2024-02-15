@@ -178,6 +178,8 @@ public class Arrays extends PApplet {
 
 				break;
 			case 2:
+				fill(0, 0, 255);
+				textSize(20);
 				text("Rainfall Pie Chart", width / 2, yAxis / 2);
 				float midX = width / 2;
 				float midY = height / 2;
@@ -185,16 +187,22 @@ public class Arrays extends PApplet {
 				float total = 0;
 				float start = 0;
 				float end = 0;
+				float mid = 0;
 				int i = 0;
+				float textRadius = height / 4 + 20;
 
 				for (float rain : rainfall) {
 					total += rain;
 				}
 
 				for (float rain : rainfall) {
-					fill(i++ * 15, 255, 255);
-					end = map1(rain, 0, total, 0, TWO_PI);
-					arc(midX, midY, pieSize, pieSize, start, end);
+					fill((i++ * 20) % 360, 255, 255);
+					end += map1(rain, 0, total, 0, TWO_PI);
+					arc(midX, midY, pieSize, pieSize, start, end, PIE);
+					mid = (start + end) / 2;
+
+					fill(0, 0, 255);
+					text(months[i - 1], midX + textRadius * cos(mid), midY + textRadius * sin(mid));
 					start = end;
 				}
 
