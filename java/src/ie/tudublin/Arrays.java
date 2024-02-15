@@ -105,9 +105,9 @@ public class Arrays extends PApplet {
 		float xAxis = 50;
 		float yAxis = 50;
 		float textSize = 12;
-		float maxAxis = getMax() + 30;
+		// float maxAxis = getMax() + 30;
 		int incrementX = 50;
-		int xAxisRange = ceil(maxAxis / incrementX);
+		int xAxisRange = ceil(500 / incrementX);
 
 		textSize(textSize);
 		textAlign(CENTER, CENTER);
@@ -168,13 +168,25 @@ public class Arrays extends PApplet {
 					if (i < months.length - 1) {
 						float rainfallY2 = map1(rainfall[i + 1], 0, 500, yAxis, (float) height - yAxis);
 						line((x + x2) / 2, height - rainfallY, (x2 - x) / 2 + x2, height - rainfallY2);
+						strokeWeight(15);
+						stroke(i * (250 / 12), 255, 255);
+						line((x + x2) / 2, height - rainfallY, (x + x2) / 2, height - rainfallY);
+						strokeWeight(2);
+						stroke(0, 0, 255);
 					}
-					// rect(x, (float) height - yAxis, x2 - x, -rainfallY + yAxis);
+
 					textAlign(CENTER, CENTER);
 					fill(0, 0, 255);
 					text(rainfall[i], (x2 + x) / 2, height - rainfallY - 20);
 					text(months[i], x + 20, (float) height - yAxis + 15);
 				}
+
+				float x = map1(11, 0, months.length, xAxis, (float) width - xAxis);
+				float x2 = map1(12, 0, months.length, xAxis, (float) width - xAxis);
+				float rainfallY = map1(rainfall[11], 0, 500, yAxis, (float) height - yAxis);
+				strokeWeight(15);
+				stroke(255, 255, 255);
+				line((x + x2) / 2, height - rainfallY, (x + x2) / 2, height - rainfallY);
 
 				break;
 			case 2:
@@ -190,10 +202,14 @@ public class Arrays extends PApplet {
 				float mid = 0;
 				int i = 0;
 				float textRadius = height / 4 + 20;
+				float percentRadius = height / 4 - 30;
 
 				for (float rain : rainfall) {
 					total += rain;
 				}
+
+				stroke(0, 0, 255);
+				strokeWeight(2);
 
 				for (float rain : rainfall) {
 					fill((i++ * 20) % 360, 255, 255);
@@ -202,10 +218,14 @@ public class Arrays extends PApplet {
 					mid = (start + end) / 2;
 
 					fill(0, 0, 255);
+					textSize(15);
+					String percent = String.format("%.01f", (rain / total) * 100) + "%";
+					text(percent, midX + percentRadius * cos(mid),
+							midY + percentRadius * sin(mid));
+					textSize(20);
 					text(months[i - 1], midX + textRadius * cos(mid), midY + textRadius * sin(mid));
 					start = end;
 				}
-
 				break;
 			default:
 				break;
